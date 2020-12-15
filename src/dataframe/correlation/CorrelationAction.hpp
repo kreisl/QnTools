@@ -43,6 +43,7 @@ namespace Qn::Correlation {
  */
 class CorrelationActionBase {
  public:
+  using InitializationObject = std::vector<Qn::DataContainerQVector>;
   /**
    * Constructor
    * @param name name of the correlation
@@ -72,6 +73,7 @@ class CorrelationActionBase {
  protected:
   std::string action_name_;             /// Name of the action
   Qn::DataContainerStatCollect correlation_;  /// Result data container.
+  std::vector<std::string> input_from_reader_names_; /// names of branches used for initialization
 };
 
 /**
@@ -103,9 +105,8 @@ class CorrelationAction<Function, WeightFunction,
  private:
   constexpr static std::size_t NumberOfInputs = sizeof...(InputDataContainers);
   using DataContainerRef = std::reference_wrapper<const DataContainerQVector>;
-  using InitializationObject = std::vector<Qn::DataContainerQVector>;
-
  public:
+  using InitializationObject = CorrelationActionBase::InitializationObject;
   /**
    * Constructor
    * @param function correlation function of type (const Qn::QVector &q...) ->
@@ -128,17 +129,24 @@ class CorrelationAction<Function, WeightFunction,
         weight_function_(weight_function),
         use_weights_(use_weights) {}
 
+  template <std::size_t N>
+  auto SetReaderInputNames(const std::array<std::string, N> &names) {
+    input_from_reader_names_ = names;
+  }
+
  private:
   friend class AverageHelper<CorrelationAction>;  /// Helper friend
 
   unsigned int stride_ = 1;     /// Offset of due to the non-event axes.
   unsigned int n_samples_ = 1;  /// Number of samples used in the ReSampler.
   std::array<std::string, NumberOfInputs>
-      input_names_;                 /// Names of the input Qvectors.
+      input_names_;                 /// Names of the input Q-vectors.
+ std::array<std::string, NumberOfInputs>
+      input_from_reader_names_;     /// Names of the input Q-vectors.
   AxesConfig event_axes_;           /// Configuration of the event axes.
   Function function_;               /// correlation function.
   WeightFunction weight_function_;  /// weight function.
-  bool use_weights_;
+  bool use_weights_;                /// determines if weight is used.
 
   /**
    * Returns the name of the columns used in the correction step. This includes
@@ -147,7 +155,7 @@ class CorrelationAction<Function, WeightFunction,
    * @return returns a vector of the column names.
    */
   [[nodiscard]] std::vector<std::string> GetColumnNames() const {
-    std::vector<std::string> columns;
+    auto columns = std::vector<std::string>{};
     std::copy(std::begin(input_names_), std::end(input_names_),
               std::back_inserter(columns));
     columns.emplace_back("samples");
@@ -195,7 +203,7 @@ class CorrelationAction<Function, WeightFunction,
     }
     try {
       reader.Next();
-      std::vector<Qn::DataContainerQVector> initialization_object;
+      auto initialization_object = std::vector<Qn::DataContainerQVector>{};
       // Move valid entries to the initialization Object
       std::transform(std::begin(input_data), std::end(input_data),
                      std::back_inserter(initialization_object),
@@ -222,16 +230,17 @@ class CorrelationAction<Function, WeightFunction,
   void Initialize(TTreeReader &reader) {
     using namespace std::literals::string_literals;
     reader.Restart();
-    std::vector<TTreeReaderValue<DataContainerQVector>> input_data;
+    auto input_data = std::vector<TTreeReaderValue<DataContainerQVector>>{};
     // Get a vector of TTreeReaderValues.
+    if (input_from_reader_names_.empty()) input_from_reader_names_ = input_names_;
     std::transform(
-        std::begin(input_names_), std::end(input_names_),
+        std::begin(input_from_reader_names_), std::end(input_from_reader_names_),
         std::back_inserter(input_data), [&reader](const std::string &name) {
-          return TTreeReaderValue<DataContainerQVector>(reader, name.data());
+          return TTreeReaderValue<DataContainerQVector>{reader, name.data()};
         });
     // Read in the first event in the TTree
     reader.Next();
-    std::vector<Qn::DataContainerQVector> initialization_object;
+    auto initialization_object = std::vector<Qn::DataContainerQVector>{};
     // Move valid entries to the initialization Object
     std::transform(std::begin(input_data), std::end(input_data),
                    std::back_inserter(initialization_object),

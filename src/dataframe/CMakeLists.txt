@@ -10,6 +10,7 @@ set(dataframe_headers common/AverageHelper.hpp
         correction/DefineQAction.hpp
         correlation/CorrelationAction.hpp
         correlation/CorrelationAction.hpp
+        correlation/CorrelationVector.hpp
         correlation/ReSampleHelper.hpp)
 
 list(APPEND DataFrameIncludePath
@@ -36,6 +37,7 @@ IF (QnTools_BUILD_TESTS)
             correction/RecenterAction.test.cpp
             correction/RecenterVector.test.cpp
             correlation/CorrelationAction.test.cpp
+            correlation/CorrelationVector.test.cpp
             )
     add_executable(${PROJECT_NAME}UnitTests ${SOURCES})
     target_link_libraries(${PROJECT_NAME}UnitTests PRIVATE QnTools::Base gtest_main ${PROJECT_NAME})
