@@ -47,7 +47,7 @@ class RecenterBuilder {
                      InitializationObject initialization) {
     corrections_.push_back(
         MakeRecenterAction(this_step, event_axes_, qvector, previous_step));
-    initializations_.emplace_back(std::make_unique<InitializationObject>(initialization));
+    initializations_.emplace(corrections_.size()-1, std::make_unique<InitializationObject>(initialization));
   }
 
   template <typename DataFrame>
@@ -96,7 +96,7 @@ class RecenterBuilder {
   }
 
  private:
-  std::vector<std::unique_ptr<InitializationObject>> initializations_;
+  std::map<int, std::unique_ptr<InitializationObject>> initializations_;
   std::vector<RecenterCorrection> corrections_;
   std::vector<ResultPtr> result_ptrs_;
   int min_entries_ = 0;
