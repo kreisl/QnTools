@@ -22,7 +22,7 @@
 #include <gtest/gtest.h>
 
 #include "AxesConfiguration.hpp"
-#include "QVectorHelper.hpp"
+#include "QVectorFunctor.hpp"
 
 /**
  * Check the the constructor and the definition of a Q-vector with 1 subevents.
@@ -34,8 +34,8 @@
  *       x_1^{ev_1} = 0, y_1^{ev_1} = 0
  *
  */
-TEST(QVectorHelper, BasicIntegrated) {
-  auto q_action = Qn::MakeQVectorHelper("test", {1, 2, 3, 4});
+TEST(QVectorFunctor, BasicIntegrated) {
+  auto q_action = Qn::MakeQVectorFunctor("test", {1, 2, 3, 4});
   int si = 4;
   ROOT::RVec<double> phis(si);
   ROOT::RVec<double> weights(si);
@@ -67,9 +67,9 @@ TEST(QVectorHelper, BasicIntegrated) {
  *       x_1^{ev_2} = 0, y_1^{ev_2} = -sqrt(2)
  *
  */
-TEST(QVectorHelper, Basic1D) {
+TEST(QVectorFunctor, Basic1D) {
   auto axes = Qn::MakeAxes(Qn::AxisD("t1", 2, 0, 100));
-  Qn::QVectorHelper<decltype(axes), std::tuple<ROOT::RVec<double>>> q_action(
+  Qn::QVectorFunctor<decltype(axes), std::tuple<ROOT::RVec<double>>> q_action(
       "test", {1, 2, 3, 4}, axes);
   int si = 4;
   ROOT::RVec<double> phis(si);
@@ -108,9 +108,9 @@ TEST(QVectorHelper, Basic1D) {
  *       x_1^{ev_2} = 0, y_1^{ev_2} = -sqrt(2)
  *
  */
-TEST(QVectorHelper, Basic2D) {
+TEST(QVectorFunctor, Basic2D) {
   auto axes = Qn::MakeAxes(Qn::AxisD("eta", 2, 2, 4), Qn::AxisD("pt", 2, 0, 2));
-  auto q_action = Qn::MakeQVectorHelper("test", {1, 2, 3, 4}, axes);
+  auto q_action = Qn::MakeQVectorFunctor("test", {1, 2, 3, 4}, axes);
   int si = 8;
   ROOT::RVec<double> phis(si);
   ROOT::RVec<double> weights(si);
@@ -162,7 +162,7 @@ TEST(QVectorHelper, Basic2D) {
  *       x_1^{ev_2} = 0, y_1^{ev_2} = -sqrt(2)
  *       All events in the DataFrame should give the same result.
  */
-TEST(QVectorHelper, RDataFrame) {
+TEST(QVectorFunctor, RDataFrame) {
   ROOT::RDataFrame df(8);
   std::size_t phi_size = 4;
   auto df1 = df.Define("phis",
@@ -199,7 +199,7 @@ TEST(QVectorHelper, RDataFrame) {
                          },
                          {});
   auto axes = Qn::MakeAxes(Qn::AxisD("t1", 2, 0, 100));
-  auto q_action = Qn::MakeQVectorHelper("test", {1, 2, 3, 4}, axes);
+  auto q_action = Qn::MakeQVectorFunctor("test", {1, 2, 3, 4}, axes);
   auto df2 =
       df1.Define(q_action.GetName(), q_action, {"phis", "weights", "etas"});
   auto qs = df2.Take<Qn::DataContainerQVector>("test");

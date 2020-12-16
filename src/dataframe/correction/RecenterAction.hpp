@@ -30,7 +30,7 @@
 #include "AverageHelper.hpp"
 #include "DataContainer.hpp"
 #include "QVector.hpp"
-#include "TemplateHelpers.hpp"
+#include "TemplateFunctions.hpp"
 
 namespace Qn::Correction {
 
@@ -563,7 +563,7 @@ inline auto ApplyCorrectionsVector(DataFrame df,
   ROOT::RDF::RNode corrected_df(df);
   for (auto &result : corrections) {
     corrected_df =
-        Qn::TemplateHelpers::DereferenceRResultPtr(result).ApplyCorrection(
+        Qn::TemplateFunctions::DereferenceRResultPtr(result).ApplyCorrection(
             corrected_df);
   }
   return corrected_df;

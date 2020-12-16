@@ -15,18 +15,18 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef QNTOOLS_QVECTORNORMALIZATIONHELPER_HPP_
-#define QNTOOLS_QVECTORNORMALIZATIONHELPER_HPP_
+#ifndef QNTOOLS_QVECTORNORMALIZATIONFUNCTOR_HPP_
+#define QNTOOLS_QVECTORNORMALIZATIONFUNCTOR_HPP_
 
 #include "DataContainer.hpp"
 #include "QVector.hpp"
 
 namespace Qn {
-class QVectorNormalizationHelper {
+class QVectorNormalizationFunctor {
  public:
   using Normalization = typename Qn::QVector::Normalization;
 
-  explicit QVectorNormalizationHelper(Normalization normalization)
+  explicit QVectorNormalizationFunctor(Normalization normalization)
       : normalization_(normalization) {}
 
   [[nodiscard]] std::string GetName(const std::string& name) const {
@@ -45,5 +45,6 @@ class QVectorNormalizationHelper {
  private:
   Normalization normalization_;
 };
+
 }  // namespace Qn
-#endif  // QNTOOLS_QVECTORNORMALIZATIONHELPER_HPP_
+#endif  // QNTOOLS_QVECTORNORMALIZATIONFUNCTOR_HPP_

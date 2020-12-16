@@ -31,7 +31,7 @@
 
 namespace Qn::Correlation {
 template <typename EventAxes, typename DataFrame>
-class CorrelationVector {
+class CorrelationBuilder {
  public:
   using ResultPtr =
       ROOT::RDF::RResultPtr<Qn::Correlation::CorrelationActionBase>;
@@ -43,7 +43,7 @@ class CorrelationVector {
    * @param n_samples number of samples
    * @param axes correlation axes
    */
-  CorrelationVector(DataFrame *df, int n_samples, EventAxes axes)
+  CorrelationBuilder(DataFrame *df, int n_samples, EventAxes axes)
       : df_(df), n_samples_(n_samples), event_axes_(axes) {}
 
   /**

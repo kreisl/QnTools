@@ -29,14 +29,14 @@ namespace Qn::Correlation {
 /**
  * Class for creating samples in the DataFrame using
  */
-class ReSampleHelper {
+class ReSampleFunctor {
  public:
   /**
    * Constructor
    * @param df Dataframe to which the samples are added.
    * @param n number of samples which are to be used for error estimation
    */
-  explicit ReSampleHelper(std::size_t n = 100)
+  explicit ReSampleFunctor(std::size_t n = 100)
       : n_(n), generator_(std::random_device{}()), poisson_(1) {}
 
   /**
@@ -67,7 +67,7 @@ class ReSampleHelper {
  */
 template <typename DataFrame>
 auto Resample(DataFrame df, std::size_t n) {
-  return df.template Define("samples", ReSampleHelper(n), {});
+  return df.template Define("samples", ReSampleFunctor(n), {});
 }
 
 }  // namespace Qn::Correlation

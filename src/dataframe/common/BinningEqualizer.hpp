@@ -39,7 +39,7 @@ namespace Qn {
  * @tparam DataFrame  type of the RDataFrame
  */
 template <typename AxesConfig, typename DataFrame>
-class EqualBinningHelper {
+class BinningEqualizer {
  public:
   using AxisTuple =
       typename AxesConfig::AxisTuple;  /// Tuple containing the axes.
@@ -50,7 +50,7 @@ class EqualBinningHelper {
    * @param to_equalize Vector of names of the event axes which are supposed to
    * be optimized.
    */
-  EqualBinningHelper(DataFrame df, const std::vector<std::string> &to_equalize)
+  BinningEqualizer(DataFrame df, const std::vector<std::string> &to_equalize)
       : dataframe_(df) {
     for (const auto &name : to_equalize)
       value_map_.emplace(name, df.template Take<double>(name));
@@ -165,7 +165,7 @@ class EqualBinningHelper {
 template <typename AxesConfig, typename DataFrame>
 auto EqualizeBinning(AxesConfig &config, DataFrame dataframe,
                      const std::vector<std::string> &to_equalize) {
-  Qn::EqualBinningHelper<AxesConfig, DataFrame>(dataframe, to_equalize)(config);
+  Qn::BinningEqualizer<AxesConfig, DataFrame>(dataframe, to_equalize)(config);
 }
 
 }  // namespace Qn

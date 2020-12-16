@@ -21,10 +21,10 @@
 #include "AverageHelper.hpp"
 #include "AxesConfiguration.hpp"
 #include "CorrelationAction.hpp"
-#include "CorrelationVector.hpp"
-#include "ReSampleHelper.hpp"
+#include "CorrelationBuilder.hpp"
+#include "ReSampleFunctor.hpp"
 
-TEST(CorrelationVectorUnitTest, RDataFrame) {
+TEST(CorrelationBuilderUnitTest, RDataFrame) {
   ROOT::RDataFrame df(100);
   std::size_t phi_size = 4;
   Qn::DataContainerQVector qvec_proto;
@@ -58,7 +58,7 @@ TEST(CorrelationVectorUnitTest, RDataFrame) {
   auto df2 = Qn::Correlation::Resample(df1, n);
   auto y = Qn::Correlation::UseWeights::Yes;
   std::array<std::string, 1> qs = {"q"};
-  auto correlationvector = Qn::Correlation::CorrelationVector(&df2, n, axes);
+  auto correlationvector = Qn::Correlation::CorrelationBuilder(&df2, n, axes);
   correlationvector.AddCorrelationWithInitializationObject("test", c1, c1, y,
                                                            qs, initializations);
 

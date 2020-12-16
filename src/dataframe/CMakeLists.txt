@@ -4,14 +4,14 @@ add_library(${PROJECT_NAME} INTERFACE)
 
 set(dataframe_headers common/AverageHelper.hpp
         common/AxesConfiguration.hpp
-        common/EqualBinningHelper.hpp
-        common/TemplateHelpers.hpp
+        common/BinningEqualizer.hpp
+        common/TemplateFunctions.hpp
         correction/RecenterAction.hpp
         correction/DefineQAction.hpp
         correlation/CorrelationAction.hpp
         correlation/CorrelationAction.hpp
-        correlation/CorrelationVector.hpp
-        correlation/ReSampleHelper.hpp)
+        correlation/CorrelationBuilder.hpp
+        correlation/ReSampleFunctor.hpp)
 
 list(APPEND DataFrameIncludePath
         "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -32,12 +32,12 @@ IF (QnTools_BUILD_TESTS)
     list(APPEND SOURCES
             common/AverageHelper.test.cpp
             common/AxesConfiguration.test.cpp
-            common/QVectorHelper.test.cpp
-            common/QVectorNormalizationHelper.test.cpp
+            common/QVectorFunctor.test.cpp
+            common/QVectorNormalizationFunctor.test.cpp
             correction/RecenterAction.test.cpp
-            correction/RecenterVector.test.cpp
+            correction/RecenterBuilder.test.cpp
             correlation/CorrelationAction.test.cpp
-            correlation/CorrelationVector.test.cpp
+            correlation/CorrelationBuilder.test.cpp
             )
     add_executable(${PROJECT_NAME}UnitTests ${SOURCES})
     target_link_libraries(${PROJECT_NAME}UnitTests PRIVATE QnTools::Base gtest_main ${PROJECT_NAME})

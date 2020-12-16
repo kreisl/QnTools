@@ -21,8 +21,8 @@
 #include <gtest/gtest.h>
 
 #include "AxesConfiguration.hpp"
-#include "QVectorHelper.hpp"
-#include "QVectorNormalizationHelper.hpp"
+#include "QVectorFunctor.hpp"
+#include "QVectorNormalizationFunctor.hpp"
 
 /**
  * Check the the constructor and the definition of a Q-vector with 2 subevents
@@ -37,7 +37,7 @@
  *       x_1^{ev_2} = 0, y_1^{ev_2} = -sqrt(2)/2
  *       All events in the DataFrame should give the same result.
  */
-TEST(QVectorNormalizationHelper, RDataFrame) {
+TEST(QVectorNormalizationFunctor, RDataFrame) {
 ROOT::RDataFrame df(8);
 std::size_t phi_size = 4;
 auto df1 = df.Define("phis",
@@ -74,8 +74,8 @@ auto df1 = df.Define("phis",
             },
             {});
 auto axes = Qn::MakeAxes(Qn::AxisD("t1", 2, 0, 100));
-auto q_action = Qn::MakeQVectorHelper("test", {1, 2, 3, 4}, axes);
-auto q_normalization = Qn::QVectorNormalizationHelper(Qn::QVectorNormalizationHelper::Normalization::M);
+auto q_action = Qn::MakeQVectorFunctor("test", {1, 2, 3, 4}, axes);
+auto q_normalization = Qn::QVectorNormalizationFunctor(Qn::QVectorNormalizationFunctor::Normalization::M);
 auto df2 =
     df1.Define(q_action.GetName(), q_action, {"phis", "weights", "etas"})
        .Define(q_normalization.GetName(q_action.GetName()), q_normalization, {q_action.GetName()});

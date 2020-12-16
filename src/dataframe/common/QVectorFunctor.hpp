@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef QNTOOLS_QVECTORACTION_HPP_
-#define QNTOOLS_QVECTORACTION_HPP_
+#ifndef QNTOOLS_QVECTORFUNCTOR_HPP_
+#define QNTOOLS_QVECTORFUNCTOR_HPP_
 
 #include <string>
 #include <string_view>
@@ -36,7 +36,7 @@ namespace Qn {
  * @tparam EventParameters
  */
 template <typename AxesConfig, typename DetectorParameters>
-class QVectorHelper;
+class QVectorFunctor;
 
 /**
  * Defines a Q vector with a variable number of harmonics from a vector of
@@ -46,7 +46,7 @@ class QVectorHelper;
  * @tparam DetectorParameters
  */
 template <typename AxesConfig, typename... DetectorParameters>
-class QVectorHelper<AxesConfig, std::tuple<DetectorParameters...>> {
+class QVectorFunctor<AxesConfig, std::tuple<DetectorParameters...>> {
  public:
   using AxisValueType = typename AxesConfig::AxisValueType;
   using AxisValueTypeTuple = typename AxesConfig::AxisValueTypeTuple;
@@ -54,7 +54,7 @@ class QVectorHelper<AxesConfig, std::tuple<DetectorParameters...>> {
       typename std::vector<std::pair<AxisValueTypeTuple, AxisValueTypeTuple>>;
   static constexpr std::size_t NumberOfParameters =
       sizeof...(DetectorParameters);
-  QVectorHelper(std::string_view name, const std::vector<int> &harmonics,
+  QVectorFunctor(std::string_view name, const std::vector<int> &harmonics,
                 AxesConfig axes_config)
       : name_(name), axes_(axes_config), q_vector_(axes_config.GetVector()) {
     bin_edges_mapping_ = axes_.GetBinEdgesIndexMap();
@@ -80,12 +80,12 @@ class QVectorHelper<AxesConfig, std::tuple<DetectorParameters...>> {
     auto rest_parameters_tuple = std::tuple(parameters...);
     for (int ibin = 0; ibin < axes_.GetSize(); ++ibin) {
       auto [lower_edges, upper_edges] = bin_edges_mapping_[ibin];
-      Qn::TemplateHelpers::TupleOf<NumberOfParameters, ROOT::RVec<double>>
+      Qn::TemplateFunctions::TupleOf<NumberOfParameters, ROOT::RVec<double>>
           selections_tuple;
       auto selector = [](auto &res, auto lower, auto upper, auto value) {
         res = value >= lower && value < upper;
       };
-      Qn::TemplateHelpers::TupleForEach(selector, selections_tuple, lower_edges,
+      Qn::TemplateFunctions::TupleForEach(selector, selections_tuple, lower_edges,
                                         upper_edges, rest_parameters_tuple);
       auto is_selected = std::apply([&](auto... cond) { return (cond && ...); },
                                     selections_tuple);
@@ -121,7 +121,7 @@ class QVectorHelper<AxesConfig, std::tuple<DetectorParameters...>> {
  */
 template <>
 inline Qn::DataContainerQVector
-QVectorHelper<AxesConfiguration<AxisD>, typename std::tuple<>>::operator()(
+QVectorFunctor<AxesConfiguration<AxisD>, typename std::tuple<>>::operator()(
     const ROOT::RVec<double> &phis, const ROOT::RVec<double> &weights) {
   Qn::DataContainerQVector ret = q_vector_;
   auto &outputbin = ret.At(0);
@@ -133,18 +133,18 @@ QVectorHelper<AxesConfiguration<AxisD>, typename std::tuple<>>::operator()(
 }
 
 template <typename ParameterAxes>
-auto MakeQVectorHelper(std::string_view name, const std::vector<int> &harmonics,
+auto MakeQVectorFunctor(std::string_view name, const std::vector<int> &harmonics,
                        ParameterAxes axes_config) {
-  using Parameters = typename Qn::TemplateHelpers::TupleOf<
+  using Parameters = typename Qn::TemplateFunctions::TupleOf<
       ParameterAxes::kDimension,
       ROOT::RVec<typename ParameterAxes::AxisValueType>>;
-  return QVectorHelper<ParameterAxes, Parameters>(name, harmonics, axes_config);
+  return QVectorFunctor<ParameterAxes, Parameters>(name, harmonics, axes_config);
 }
 
-inline auto MakeQVectorHelper(std::string_view name,
+inline auto MakeQVectorFunctor(std::string_view name,
                               const std::vector<int> &harmonics) {
   auto axes_null = MakeAxes(AxisD("integrated", 1, 0, 1));
-  return QVectorHelper<decltype(axes_null), std::tuple<>>(name, harmonics,
+  return QVectorFunctor<decltype(axes_null), std::tuple<>>(name, harmonics,
                                                           axes_null);
 }
 }  // namespace Qn

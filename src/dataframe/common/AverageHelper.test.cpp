@@ -19,7 +19,7 @@
 
 #include "AverageHelper.hpp"
 #include "AxesConfiguration.hpp"
-#include "QVectorHelper.hpp"
+#include "QVectorFunctor.hpp"
 #include "RecenterAction.hpp"
 
 /**

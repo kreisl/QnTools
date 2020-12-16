@@ -25,14 +25,14 @@
 
 namespace Qn::Correction {
 template <typename EventAxes>
-class RecenterVector {
+class RecenterBuilder {
  public:
   using RecenterCorrection = typename Qn::Correction::RecenterAction<
       EventAxes, typename EventAxes::AxisValueTypeTuple>;
   using ResultPtr = typename ROOT::RDF::RResultPtr<RecenterCorrection>;
   using InitializationObject =
       typename RecenterCorrection::InitializationObject;
-  explicit RecenterVector(EventAxes event_axes) : event_axes_(event_axes) {}
+  explicit RecenterBuilder(EventAxes event_axes) : event_axes_(event_axes) {}
 
   void SetMinimumEntries(int min_entries) { min_entries_ = min_entries; }
 

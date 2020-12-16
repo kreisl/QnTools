@@ -21,9 +21,9 @@
 #include "AverageHelper.hpp"
 #include "AxesConfiguration.hpp"
 #include "RecenterAction.hpp"
-#include "RecenterVector.hpp"
+#include "RecenterBuilder.hpp"
 
-TEST(RecenterVectorUnitTest, RDataFrame) {
+TEST(RecenterBuilderUnitTest, RDataFrame) {
 ROOT::RDataFrame df(100);
 std::size_t phi_size = 4;
 Qn::DataContainerQVector qvec_proto;
@@ -52,7 +52,7 @@ auto df1 = df0.Define("q",
                       {"event"});
 auto axes = Qn::MakeAxes(event_axis);
 
-auto recentervector = Qn::Correction::RecenterVector(axes);
+auto recentervector = Qn::Correction::RecenterBuilder(axes);
 recentervector.AddCorrection("q","test","",qvec_proto);
 auto cfile = TFile::Open("correctionfile.root","UPDATE");
 auto ret = recentervector.Apply(df1, cfile);

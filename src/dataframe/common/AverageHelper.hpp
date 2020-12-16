@@ -18,17 +18,17 @@
 #define QNTOOLS_AVERAGEHELPER_H_
 
 #include <exception>
+#include <mutex>
 #include <string>
 #include <tuple>
 #include <vector>
-#include <mutex>
 
 #include <ROOT/RDF/ActionHelpers.hxx>
 #include <ROOT/RResultPtr.hxx>
 #include <TROOT.h>
 
 #include "DataContainer.hpp"
-#include "TemplateHelpers.hpp"
+#include "TemplateFunctions.hpp"
 
 namespace Qn {
 

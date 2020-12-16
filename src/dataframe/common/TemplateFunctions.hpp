@@ -23,7 +23,7 @@
 
 #include <ROOT/RResultPtr.hxx>
 
-namespace Qn::TemplateHelpers {
+namespace Qn::TemplateFunctions {
 
 namespace Impl {
 template <typename T>

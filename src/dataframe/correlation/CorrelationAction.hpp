@@ -31,10 +31,9 @@
 #include "AverageHelper.hpp"
 #include "DataContainer.hpp"
 #include "QVector.hpp"
-#include "TemplateHelpers.hpp"
-
 #include "Stat.hpp"
 #include "StatCollect.hpp"
+#include "TemplateFunctions.hpp"
 
 namespace Qn::Correlation {
 
@@ -343,8 +342,8 @@ class CorrelationAction<Function, WeightFunction,
         }
         q_array[step] = &bin;
         correlation_[out_bin].Fill(
-            TemplateHelpers::Call(function_, q_array),
-            TemplateHelpers::Call(weight_function_, q_array), sample_ids);
+            TemplateFunctions::Call(function_, q_array),
+            TemplateFunctions::Call(weight_function_, q_array), sample_ids);
         ++out_bin;
       }
     } else {  /// recursion
@@ -389,7 +388,7 @@ class CorrelationAction<Function, WeightFunction,
   }
 };
 
-using namespace TemplateHelpers;
+using namespace TemplateFunctions;
 enum class UseWeights {
   Yes,
   No
