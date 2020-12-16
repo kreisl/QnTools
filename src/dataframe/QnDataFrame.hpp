@@ -26,7 +26,8 @@
 #include "RecenterAction.hpp"
 #include "RecenterBuilder.hpp"
 // correlation step
-#include "CorrelationAction.hpp"
 #include "CorrelationFunctions.hpp"
+#include "CorrelationAction.hpp"
+#include "CorrelationBuilder.hpp"
 #include "ReSampleFunctor.hpp"
 #endif  // QNTOOLS_QNDATAFRAME_H_
